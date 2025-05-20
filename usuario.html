@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi perfil - El Spawn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-6">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-4xl font-bold mb-4">Hola, <span id="clienteNombre">Gamer</span> 👾</h1>
+    <p class="text-lg mb-6">Bienvenido a tu dashboard en El Spawn</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
+        <h2 class="text-xl font-semibold mb-2">Puntos acumulados</h2>
+        <p id="puntos" class="text-3xl font-bold text-green-400">--- pts</p>
+      </div>
+
+      <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
+        <h2 class="text-xl font-semibold mb-2">Próximo Re-spawn</h2>
+        <div class="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
+          <div id="progreso" class="bg-green-500 h-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <p id="faltanPuntos" class="text-sm mt-1">Faltan --- puntos</p>
+      </div>
+
+      <div class="bg-gray-800 p-4 rounded-xl shadow-lg col-span-full">
+        <h2 class="text-xl font-semibold mb-2">Historial de visitas</h2>
+        <ul id="historialVisitas" class="list-disc list-inside space-y-1 text-sm">
+          <li>---</li>
+        </ul>
+      </div>
+
+      <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
+        <h2 class="text-xl font-semibold mb-2">Re-spawns ganados</h2>
+        <p id="respawnsGanados" class="text-2xl text-yellow-400 font-bold">---</p>
+      </div>
+
+      <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
+        <h2 class="text-xl font-semibold mb-2">Re-spawns reclamados</h2>
+        <p id="respawnsReclamados" class="text-2xl text-red-400 font-bold">---</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simulación de datos ficticios basados en el código en la URL
+    const params = new URLSearchParams(window.location.search);
+    const codigo = params.get("codigo") || "Sin código";
+
+    // Simular una respuesta temporal
+    const datosMock = {
+      nombre: "SPAWN1001",
+      puntos: 18,
+      objetivo: 20,
+      visitas: ["2025-05-18", "2025-05-15", "2025-05-10"],
+      respawnsGanados: 2,
+      respawnsReclamados: 1
+    };
+
+    document.getElementById("clienteNombre").textContent = datosMock.nombre;
+    document.getElementById("puntos").textContent = datosMock.puntos + " pts";
+
+    const porcentaje = Math.min(100, (datosMock.puntos / datosMock.objetivo) * 100);
+    document.getElementById("progreso").style.width = porcentaje + "%";
+    document.getElementById("faltanPuntos").textContent = `Faltan ${datosMock.objetivo - datosMock.puntos} puntos para tu próximo Re-spawn`;
+
+    const visitasHTML = datosMock.visitas.map(v => `<li>${v}</li>`).join("");
+    document.getElementById("historialVisitas").innerHTML = visitasHTML;
+
+    document.getElementById("respawnsGanados").textContent = datosMock.respawnsGanados;
+    document.getElementById("respawnsReclamados").textContent = datosMock.respawnsReclamados;
+  </script>
+</body>
+</html>

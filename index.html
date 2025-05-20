@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Spawn - Acceso</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+
+  <div class="bg-gray-800 p-6 rounded-2xl shadow-xl w-full max-w-md">
+    <h1 class="text-3xl font-bold text-center mb-6">Bienvenido a El Spawn</h1>
+
+    <form id="loginForm" class="flex flex-col gap-4">
+      <label for="codigo" class="text-sm font-medium">Ingresa tu código de cliente:</label>
+      <input type="text" id="codigo" name="codigo" placeholder="Ej: SPAWN1001" required
+        class="px-4 py-2 rounded-lg text-black">
+
+      <button type="submit"
+        class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-xl transition-all duration-300">
+        Ingresar
+      </button>
+    </form>
+
+    <p id="mensaje" class="text-center text-sm mt-4 text-red-400 hidden">Código inválido. Intenta nuevamente.</p>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const codigo = document.getElementById("codigo").value.trim();
+      if (codigo) {
+        // En el futuro esto redirigirá a una URL con datos reales
+        window.location.href = `usuario.html?codigo=${encodeURIComponent(codigo)}`;
+      } else {
+        document.getElementById("mensaje").classList.remove("hidden");
+      }
+    });
+  </script>
+
+</body>
+</html>
