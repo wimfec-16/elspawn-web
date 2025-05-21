@@ -1,33 +1,33 @@
 <!DOCTYPE html>
-<!-- Dashboard personalizado para El Spawn -->
+<!-- Dashboard del usuario en El Spawn -->
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi perfil - El Spawn</title>
-  <!-- Tailwind CSS para estilos visuales -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen p-6">
-  <!-- Imagen decorativa principal -->
+
+  <!-- Logo o imagen decorativa -->
   <div class="flex justify-center mb-6">
     <img src="spawnpc.png" alt="Gamer Cat" class="w-36">
   </div>
 
-  <!-- Contenedor de todo el dashboard -->
+  <!-- Contenedor principal del dashboard -->
   <div class="max-w-3xl mx-auto">
     <h1 class="text-4xl font-bold mb-4">Hola, <span id="clienteNombre">Gamer</span> 👾</h1>
     <p class="text-lg mb-6">Bienvenido a tu dashboard en El Spawn</p>
 
-    <!-- Grid con la información personalizada -->
+    <!-- Contenedor de tarjetas -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Tarjeta de puntos -->
+      <!-- Puntos acumulados -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
         <h2 class="text-xl font-semibold mb-2">Puntos acumulados</h2>
         <p id="puntos" class="text-3xl font-bold text-green-400">---</p>
       </div>
 
-      <!-- Tarjeta de progreso hacia re-spawn -->
+      <!-- Progreso hacia el próximo Re-spawn -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
         <h2 class="text-xl font-semibold mb-2">Próximo Re-spawn</h2>
         <div class="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
@@ -36,7 +36,7 @@
         <p id="faltanPuntos" class="text-sm mt-1">Faltan --- puntos</p>
       </div>
 
-      <!-- Resumen (en texto) de historial -->
+      <!-- Historial de visitas (resumen) -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg col-span-full">
         <h2 class="text-xl font-semibold mb-2">Historial de visitas</h2>
         <ul id="historialVisitas" class="list-disc list-inside space-y-1 text-sm">
@@ -56,26 +56,30 @@
         <p id="respawnsReclamados" class="text-2xl text-red-400 font-bold">---</p>
       </div>
     </div>
+
+    <!-- Contenedor para mensajes de error -->
+    <div id="errorMensaje" class="text-red-400 text-center text-lg mt-6 hidden">
+      ⚠️ Código inválido o no encontrado
+    </div>
   </div>
 
-  <!-- Script para obtener y mostrar los datos del cliente desde Google Sheets -->
+  <!-- Script para consultar datos reales desde Google Sheets -->
   <script>
-    // Extraer código de cliente desde la URL
     const params = new URLSearchParams(window.location.search);
-    const codigo = (params.get("codigo") || "SIN_CODIGO").toUpperCase();
+    const codigo = (params.get("codigo") || "").trim().toUpperCase(); // Convertimos a mayúsculas
 
-    // Enlace al Web App conectado a Google Sheets
     const url = `https://script.google.com/macros/s/AKfycbxMIZde3-7dksQEEqqxnwIso9eeATNXgMEkbbTRuV5HdWhm5zoXG6qr2HMsHF_b8KAY/exec?codigo=${encodeURIComponent(codigo)}`;
 
     fetch(url)
       .then(res => res.json())
       .then(data => {
         if (data.error) {
-          document.body.innerHTML = `<p class="text-red-400 text-xl text-center mt-10">⚠️ Código inválido o no encontrado</p>`;
+          // Mostrar mensaje de error sin borrar el dashboard
+          document.getElementById("errorMensaje").classList.remove("hidden");
           return;
         }
 
-        // Mostrar datos personalizados en la interfaz
+        // Mostrar los datos del cliente
         document.getElementById("clienteNombre").textContent = data.nombre || codigo;
         document.getElementById("puntos").textContent = (data.visitas * 0.5) + " pts";
 
@@ -89,7 +93,8 @@
         document.getElementById("respawnsReclamados").textContent = data.respawns_reclamados;
       })
       .catch(err => {
-        document.body.innerHTML = `<p class="text-red-400 text-xl text-center mt-10">Error cargando datos. Intenta de nuevo.</p>`;
+        document.getElementById("errorMensaje").textContent = "Error de conexión. Intenta de nuevo.";
+        document.getElementById("errorMensaje").classList.remove("hidden");
         console.error(err);
       });
   </script>
