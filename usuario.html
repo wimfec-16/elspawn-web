@@ -52,26 +52,41 @@
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const codigo = params.get("codigo") || "Sin código";
+    const codigo = (params.get("codigo") || "Sin código").toUpperCase();
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const codigo = params.get("codigo") || "SIN_CODIGO";
 
-    const datosMock = {
-      nombre: "SPAWN1001",
-      puntos: 18,
-      objetivo: 20,
-      visitas: ["2025-05-18", "2025-05-15", "2025-05-10"],
-      respawnsGanados: 2,
-      respawnsReclamados: 1
-    };
+  // Pega aquí tu URL del Web App (el que termina en .../exec)
+  const url = `https://script.google.com/macros/s/AKfycbxMIZde3-7dksQEEqqxnwIso9eeATNXgMEkbbTRuV5HdWhm5zoXG6qr2HMsHF_b8KAY/exec?codigo=${encodeURIComponent(codigo)}`;
 
-    document.getElementById("clienteNombre").textContent = datosMock.nombre;
-    document.getElementById("puntos").textContent = datosMock.puntos + " pts";
-    const porcentaje = Math.min(100, (datosMock.puntos / datosMock.objetivo) * 100);
-    document.getElementById("progreso").style.width = porcentaje + "%";
-    document.getElementById("faltanPuntos").textContent = `Faltan ${datosMock.objetivo - datosMock.puntos} puntos para tu próximo Re-spawn`;
-    const visitasHTML = datosMock.visitas.map(v => `<li>${v}</li>`).join("");
-    document.getElementById("historialVisitas").innerHTML = visitasHTML;
-    document.getElementById("respawnsGanados").textContent = datosMock.respawnsGanados;
-    document.getElementById("respawnsReclamados").textContent = datosMock.respawnsReclamados;
-  </script>
-</body>
-</html>
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        document.body.innerHTML = `<p class="text-red-400 text-xl text-center mt-10">⚠️ Código inválido o no encontrado</p>`;
+        return;
+      }
+
+      document.getElementById("clienteNombre").textContent = data.nombre || codigo;
+      document.getElementById("puntos").textContent = (data.visitas * 0.5) + " pts";
+
+      const porcentaje = Math.min(100, (data.visitas * 0.5 / 20) * 100);
+      document.getElementById("progreso").style.width = porcentaje + "%";
+
+      document.getElementById("faltanPuntos").textContent =
+        `Faltan ${20 - data.visitas * 0.5} puntos para tu próximo Re-spawn`;
+
+      document.getElementById("respawnsGanados").textContent = data.respawns;
+      document.getElementById("respawnsReclamados").textContent = data.respawns_reclamados;
+
+      // Historial de visitas no incluido, porque ya solo usamos resumen
+    })
+    .catch(err => {
+      document.body.innerHTML = `<p class="text-red-400 text-xl text-center mt-10">Error cargando datos. Intenta de nuevo.</p>`;
+      console.error(err);
+    });
+</script>
+
+
+
