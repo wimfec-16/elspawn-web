@@ -1,28 +1,35 @@
 <!DOCTYPE html>
+<!-- Página de perfil de usuario para El Spawn, muestra puntos y progreso -->
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi perfil - El Spawn</title>
+  <!-- Carga Tailwind CSS desde CDN para estilos rápidos -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen p-6">
 
-  <!-- Logo en el dashboard -->
+  <!-- Imagen decorativa de cabecera -->
   <div class="flex justify-center mb-6">
-    <img src="spawnpc.png" alt="El Spawn Gamer" class="w-28">
+    <img src="spawnpc.png" alt="Gamer Cat" class="w-36">
   </div>
 
+  <!-- Contenedor principal del contenido del usuario -->
   <div class="max-w-3xl mx-auto">
     <h1 class="text-4xl font-bold mb-4">Hola, <span id="clienteNombre">Gamer</span> 👾</h1>
     <p class="text-lg mb-6">Bienvenido a tu dashboard en El Spawn</p>
 
+    <!-- Sección de tarjetas con datos -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Tarjeta de puntos acumulados -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
         <h2 class="text-xl font-semibold mb-2">Puntos acumulados</h2>
         <p id="puntos" class="text-3xl font-bold text-green-400">--- pts</p>
       </div>
 
+      <!-- Tarjeta de progreso hacia próximo Re-spawn -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
         <h2 class="text-xl font-semibold mb-2">Próximo Re-spawn</h2>
         <div class="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
@@ -31,18 +38,21 @@
         <p id="faltanPuntos" class="text-sm mt-1">Faltan --- puntos</p>
       </div>
 
+      <!-- Historial (resumen simple) -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg col-span-full">
         <h2 class="text-xl font-semibold mb-2">Historial de visitas</h2>
         <ul id="historialVisitas" class="list-disc list-inside space-y-1 text-sm">
-          <li>---</li>
+          <li>(Resumen basado en visitas totales)</li>
         </ul>
       </div>
 
+      <!-- Re-spawns ganados -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
         <h2 class="text-xl font-semibold mb-2">Re-spawns ganados</h2>
         <p id="respawnsGanados" class="text-2xl text-yellow-400 font-bold">---</p>
       </div>
 
+      <!-- Re-spawns reclamados -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
         <h2 class="text-xl font-semibold mb-2">Re-spawns reclamados</h2>
         <p id="respawnsReclamados" class="text-2xl text-red-400 font-bold">---</p>
@@ -50,43 +60,48 @@
     </div>
   </div>
 
+  <!-- Script para conectar al Web App de Google Sheets y mostrar los datos -->
   <script>
+    // Obtener el parámetro "codigo" desde la URL (ej: usuario.html?codigo=SPAWN1001)
     const params = new URLSearchParams(window.location.search);
-    const codigo = (params.get("codigo") || "Sin código").toUpperCase();
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const codigo = params.get("codigo") || "SIN_CODIGO";
+    const codigo = (params.get("codigo") || "SIN_CODIGO").toUpperCase();
 
-  // Pega aquí tu URL del Web App (el que termina en .../exec)
-  const url = `https://script.google.com/macros/s/AKfycbxMIZde3-7dksQEEqqxnwIso9eeATNXgMEkbbTRuV5HdWhm5zoXG6qr2HMsHF_b8KAY/exec?codigo=${encodeURIComponent(codigo)}`;
+    // Enlace al Web App desplegado desde Apps Script
+    const url = `https://script.google.com/macros/s/AKfycbxMIZde3-7dksQEEqqxnwIso9eeATNXgMEkbbTRuV5HdWhm5zoXG6qr2HMsHF_b8KAY/exec?codigo=${encodeURIComponent(codigo)}`;
 
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        document.body.innerHTML = `<p class="text-red-400 text-xl text-center mt-10">⚠️ Código inválido o no encontrado</p>`;
-        return;
-      }
+    // Conectar a Google Sheets, recibir los datos, y mostrarlos dinámicamente
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          // Mostrar mensaje si el código no existe en la base
+          document.body.innerHTML = `<p class="text-red-400 text-xl text-center mt-10">⚠️ Código inválido o no encontrado</p>`;
+          return;
+        }
 
-      document.getElementById("clienteNombre").textContent = data.nombre || codigo;
-      document.getElementById("puntos").textContent = (data.visitas * 0.5) + " pts";
+        // Actualizar nombre de usuario
+        document.getElementById("clienteNombre").textContent = data.nombre || codigo;
 
-      const porcentaje = Math.min(100, (data.visitas * 0.5 / 20) * 100);
-      document.getElementById("progreso").style.width = porcentaje + "%";
+        // Calcular puntos: 0.5 por cada sol gastado (visitas)
+        document.getElementById("puntos").textContent = (data.visitas * 0.5) + " pts";
 
-      document.getElementById("faltanPuntos").textContent =
-        `Faltan ${20 - data.visitas * 0.5} puntos para tu próximo Re-spawn`;
+        // Calcular porcentaje de progreso hacia 20 puntos (Re-spawn)
+        const porcentaje = Math.min(100, (data.visitas * 0.5 / 20) * 100);
+        document.getElementById("progreso").style.width = porcentaje + "%";
 
-      document.getElementById("respawnsGanados").textContent = data.respawns;
-      document.getElementById("respawnsReclamados").textContent = data.respawns_reclamados;
+        // Mostrar cuántos puntos faltan para próximo Re-spawn
+        document.getElementById("faltanPuntos").textContent =
+          `Faltan ${20 - data.visitas * 0.5} puntos para tu próximo Re-spawn`;
 
-      // Historial de visitas no incluido, porque ya solo usamos resumen
-    })
-    .catch(err => {
-      document.body.innerHTML = `<p class="text-red-400 text-xl text-center mt-10">Error cargando datos. Intenta de nuevo.</p>`;
-      console.error(err);
-    });
-</script>
-
-
-
+        // Mostrar Re-spawns ganados y reclamados
+        document.getElementById("respawnsGanados").textContent = data.respawns;
+        document.getElementById("respawnsReclamados").textContent = data.respawns_reclamados;
+      })
+      .catch(err => {
+        // Si hay problema de conexión o error de red, mostrar error genérico
+        document.body.innerHTML = `<p class="text-red-400 text-xl text-center mt-10">Error cargando datos. Intenta de nuevo.</p>`;
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
