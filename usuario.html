@@ -4,25 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi perfil - El Spawn</title>
-  <script src="https://cdn.tailwindcss.com"></script> <!-- Importa Tailwind CSS para diseño visual sin escribir CSS desde cero -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen p-6">
 
-  <!-- Contenedor principal del dashboard -->
+  <!-- Logo en el dashboard -->
+  <div class="flex justify-center mb-6">
+    <img src="spawnlogo.png" alt="Logo El Spawn" class="w-28">
+  </div>
+
   <div class="max-w-3xl mx-auto">
     <h1 class="text-4xl font-bold mb-4">Hola, <span id="clienteNombre">Gamer</span> 👾</h1>
     <p class="text-lg mb-6">Bienvenido a tu dashboard en El Spawn</p>
 
-    <!-- Tarjetas de resumen de puntos y progreso -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-      <!-- Puntos acumulados -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
         <h2 class="text-xl font-semibold mb-2">Puntos acumulados</h2>
         <p id="puntos" class="text-3xl font-bold text-green-400">--- pts</p>
       </div>
 
-      <!-- Barra de progreso hacia el próximo Re-spawn -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
         <h2 class="text-xl font-semibold mb-2">Próximo Re-spawn</h2>
         <div class="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
@@ -31,7 +31,6 @@
         <p id="faltanPuntos" class="text-sm mt-1">Faltan --- puntos</p>
       </div>
 
-      <!-- Historial de visitas -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg col-span-full">
         <h2 class="text-xl font-semibold mb-2">Historial de visitas</h2>
         <ul id="historialVisitas" class="list-disc list-inside space-y-1 text-sm">
@@ -39,13 +38,11 @@
         </ul>
       </div>
 
-      <!-- Re-spawns ganados -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
         <h2 class="text-xl font-semibold mb-2">Re-spawns ganados</h2>
         <p id="respawnsGanados" class="text-2xl text-yellow-400 font-bold">---</p>
       </div>
 
-      <!-- Re-spawns reclamados -->
       <div class="bg-gray-800 p-4 rounded-xl shadow-lg">
         <h2 class="text-xl font-semibold mb-2">Re-spawns reclamados</h2>
         <p id="respawnsReclamados" class="text-2xl text-red-400 font-bold">---</p>
@@ -53,13 +50,10 @@
     </div>
   </div>
 
-  <!-- Script que simula datos del cliente -->
   <script>
-    // Lee el código de cliente de la URL (ej. usuario.html?codigo=SPAWN1001)
     const params = new URLSearchParams(window.location.search);
     const codigo = params.get("codigo") || "Sin código";
 
-    // Simula datos de un cliente para mostrar mientras se conecta a la base real
     const datosMock = {
       nombre: "SPAWN1001",
       puntos: 18,
@@ -69,21 +63,13 @@
       respawnsReclamados: 1
     };
 
-    // Muestra el nombre del cliente en pantalla
     document.getElementById("clienteNombre").textContent = datosMock.nombre;
-    // Muestra los puntos actuales
     document.getElementById("puntos").textContent = datosMock.puntos + " pts";
-
-    // Calcula y muestra el porcentaje de progreso hacia el próximo Re-spawn
     const porcentaje = Math.min(100, (datosMock.puntos / datosMock.objetivo) * 100);
     document.getElementById("progreso").style.width = porcentaje + "%";
     document.getElementById("faltanPuntos").textContent = `Faltan ${datosMock.objetivo - datosMock.puntos} puntos para tu próximo Re-spawn`;
-
-    // Lista las fechas de visitas anteriores
     const visitasHTML = datosMock.visitas.map(v => `<li>${v}</li>`).join("");
     document.getElementById("historialVisitas").innerHTML = visitasHTML;
-
-    // Muestra los Re-spawns ganados y reclamados
     document.getElementById("respawnsGanados").textContent = datosMock.respawnsGanados;
     document.getElementById("respawnsReclamados").textContent = datosMock.respawnsReclamados;
   </script>
