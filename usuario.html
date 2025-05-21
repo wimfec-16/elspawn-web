@@ -68,7 +68,7 @@
     const params = new URLSearchParams(window.location.search);
     const codigo = (params.get("codigo") || "").trim().toUpperCase(); // Convertimos a mayúsculas
 
-    const url = `https://script.google.com/macros/s/AKfycbxMIZde3-7dksQEEqqxnwIso9eeATNXgMEkbbTRuV5HdWhm5zoXG6qr2HMsHF_b8KAY/exec?codigo=${encodeURIComponent(codigo)}`;
+    const url = `https://script.google.com/macros/s/AKfycbyE25yWX0lZYnAn-_AimeeUUaqeHnaGRA5eWVYyTp18ng9k1kOhgejcrRO5sxHIWK-I/exec?codigo=${encodeURIComponent(codigo)}`;
 
     fetch(url)
       .then(res => res.json())
