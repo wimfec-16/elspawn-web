@@ -4,35 +4,51 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>El Spawn - Acceso</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com"></script> <!-- Carga Tailwind CSS para estilos modernos sin escribir CSS manual -->
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
 
+  <!-- Logo de El Spawn -->
+  <img src="spawnlogo.png" alt="Logo El Spawn" class="w-40 mb-4">
+
+  <!-- Imagen del gato gamer -->
+  <img src="spawnpc.png" alt="Gamer Cat" class="w-52 mb-6">
+
+  <!-- Contenedor principal del formulario de login -->
   <div class="bg-gray-800 p-6 rounded-2xl shadow-xl w-full max-w-md">
     <h1 class="text-3xl font-bold text-center mb-6">Bienvenido a El Spawn</h1>
 
+    <!-- Formulario para ingresar código de cliente -->
     <form id="loginForm" class="flex flex-col gap-4">
       <label for="codigo" class="text-sm font-medium">Ingresa tu código de cliente:</label>
-      <input type="text" id="codigo" name="codigo" placeholder="Ej: SPAWN1001" required
+      <input type="text" id="codigo" name="codigo" required
         class="px-4 py-2 rounded-lg text-black">
 
+      <!-- Botón para enviar el formulario -->
       <button type="submit"
         class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-xl transition-all duration-300">
         Ingresar
       </button>
     </form>
 
+    <!-- Mensaje de error si no se ingresa código -->
     <p id="mensaje" class="text-center text-sm mt-4 text-red-400 hidden">Código inválido. Intenta nuevamente.</p>
   </div>
 
+  <!-- Script que gestiona el comportamiento del formulario -->
   <script>
+    // Espera que el formulario sea enviado
     document.getElementById("loginForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const codigo = document.getElementById("codigo").value.trim();
+      e.preventDefault(); // Evita que se recargue la página
+
+      // Obtiene el valor del campo 'codigo', lo limpia y lo convierte a mayúsculas
+      const codigo = document.getElementById("codigo").value.trim().toUpperCase();
+
+      // Si el campo no está vacío, redirige al dashboard del usuario
       if (codigo) {
-        // En el futuro esto redirigirá a una URL con datos reales
         window.location.href = `usuario.html?codigo=${encodeURIComponent(codigo)}`;
       } else {
+        // Si está vacío, muestra el mensaje de error
         document.getElementById("mensaje").classList.remove("hidden");
       }
     });
