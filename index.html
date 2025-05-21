@@ -2,75 +2,35 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>El Spawn - Panel del Jugador</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>El Spawn - Ingreso</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white font-mono min-h-screen flex flex-col items-center p-4">
-  <h1 class="text-3xl text-cyan-400 font-bold mb-6">🎮 El Spawn: Panel del Jugador</h1>
-
-  <div class="mb-6">
-    <label for="codigoInput" class="text-lg">Ingresa tu código de jugador:</label>
-    <input id="codigoInput" type="text" class="ml-2 px-3 py-1 rounded bg-gray-800 border border-cyan-400 text-white" placeholder="SPAWN1001">
-    <button onclick="buscarJugador()" class="ml-4 px-4 py-1 bg-cyan-500 hover:bg-cyan-600 rounded">Buscar</button>
+<body class="bg-black text-white min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-md bg-gray-800 rounded-2xl shadow-xl p-6 text-center">
+    <img src="spawnlogo.png" alt="Logo El Spawn" class="mx-auto w-32 mb-4">
+    <h1 class="text-2xl font-bold mb-4">Bienvenido a El Spawn</h1>
+    <form id="form" class="flex flex-col gap-4">
+      <input id="codigo" type="text" placeholder="Tu código de cliente" required
+             class="px-4 py-2 rounded-lg text-black placeholder-gray-500">
+      <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-xl">
+        Ingresar
+      </button>
+    </form>
+    <p id="mensaje" class="text-red-400 text-sm mt-4 hidden">Por favor ingresa un código válido.</p>
   </div>
 
-  <div id="jugadorInfo" class="w-full max-w-md bg-gray-800 p-6 rounded-xl shadow-lg hidden">
-    <p class="text-xl mb-2 font-bold text-yellow-300" id="nombre"></p>
-    <p><strong>Visitas:</strong> <span id="visitas"></span></p>
-    <p><strong>SP:</strong> <span id="sp"></span></p>
-    <p><strong>Re-spawn:</strong> <span id="respawn"></span></p>
-    <div class="mt-4">
-      <p class="mb-1">Progreso hacia Re-spawn:</p>
-      <img id="barra" src="" alt="Barra de progreso" class="w-full max-w-xs">
-    </div>
-  </div>
-
-<script>
-  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1bM3cjvEX_xLTKvP5lqCG5FtWNgB5vyZdKS3KaZSwPJs/gviz/tq?tqx=out:json';
-
-  async function buscarJugador() {
-    const codigo = document.getElementById('codigoInput').value.trim();
-    if (!codigo) return;
-
-    try {
-      const res = await fetch(SHEET_URL);
-      const text = await res.text();
-      const json = JSON.parse(text.substring(47).slice(0, -2));
-
-      const rows = json.table.rows.map(r => r.c.map(c => (c ? c.v : '')));
-
-      // Ajusta las posiciones aquí según el orden real de tus columnas:
-      const COLS = {
-        codigo_cliente: 0,
-        nombre: 1,
-        visitas: 2,
-        sp: 3,
-        respawn: 4,
-        barra_url: 5
-      };
-
-      const jugador = rows.find(r => r[COLS.codigo_cliente] === codigo);
-
-      if (!jugador) {
-        alert('Jugador no encontrado');
-        return;
+  <script>
+    document.getElementById("form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const codigo = document.getElementById("codigo").value.trim().toUpperCase();
+      if (codigo) {
+        window.location.href = `usuario.html?codigo=${encodeURIComponent(codigo)}`;
+      } else {
+        document.getElementById("mensaje").classList.remove("hidden");
       }
-
-      document.getElementById('nombre').textContent = jugador[COLS.nombre];
-      document.getElementById('visitas').textContent = jugador[COLS.visitas];
-      document.getElementById('sp').textContent = jugador[COLS.sp];
-      document.getElementById('respawn').textContent = jugador[COLS.respawn];
-      document.getElementById('barra').src = jugador[COLS.barra_url];
-
-      document.getElementById('jugadorInfo').classList.remove('hidden');
-    } catch (err) {
-      alert('Error al cargar datos: ' + err.message);
-    }
-  }
-</script>
+    });
+  </script>
 </body>
 </html>
-	
-
 
