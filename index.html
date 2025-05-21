@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<!-- Página de ingreso para clientes de El Spawn -->
+<!-- Página de ingreso para El Spawn -->
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>El Spawn - Ingreso</title>
-  <!-- Tailwind CSS para estilos rápidos -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com"></script> <!-- Framework de estilos -->
 </head>
 <body class="bg-black text-white min-h-screen flex items-center justify-center p-4">
-  <!-- Contenedor principal del formulario -->
+  <!-- Contenedor del formulario -->
   <div class="w-full max-w-md bg-gray-800 rounded-2xl shadow-xl p-6 text-center">
-    <!-- Logo del negocio -->
     <img src="spawnlogo.png" alt="Logo El Spawn" class="mx-auto w-32 mb-4">
     <h1 class="text-2xl font-bold mb-4">Bienvenido a El Spawn - Lan Center</h1>
 
-    <!-- Formulario de ingreso con código de cliente -->
+    <!-- Formulario para ingresar el código del cliente -->
     <form id="form" class="flex flex-col gap-4">
       <input id="codigo" type="text" placeholder="Tu código de cliente" required
              class="px-4 py-2 rounded-lg text-black placeholder-gray-500">
@@ -23,16 +21,19 @@
         Ingresar
       </button>
     </form>
+
+    <!-- Mensaje de error si no se ingresa nada -->
     <p id="mensaje" class="text-red-400 text-sm mt-4 hidden">Por favor ingresa un código válido.</p>
   </div>
 
-  <!-- Script que redirige al dashboard con el código ingresado -->
+  <!-- Script para capturar el código y redirigir al dashboard -->
   <script>
     document.getElementById("form").addEventListener("submit", function (e) {
       e.preventDefault();
-      const codigo = document.getElementById("codigo").value.trim().toUpperCase(); // siempre en mayúsculas
+      // Convertimos el código ingresado a mayúsculas
+      const codigo = document.getElementById("codigo").value.trim().toUpperCase();
       if (codigo) {
-        // Redirige a la página del usuario con el código en la URL
+        // Redireccionamos al dashboard pasando el código en la URL
         window.location.href = `usuario.html?codigo=${encodeURIComponent(codigo)}`;
       } else {
         document.getElementById("mensaje").classList.remove("hidden");
